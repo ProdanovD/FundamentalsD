@@ -1,0 +1,39 @@
+package OneExamPrep;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class DecryptingMEssage {
+    public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
+
+        int messagesCount = Integer.parseInt(s.nextLine());
+        Pattern first = Pattern.compile("/(^[$|%]{1})([A-Z]{1}[a-z]{2,})([$|%]{1})/");
+        Pattern second = Pattern.compile("/([^$%][|]+)/");
+        for(int i = 0; i < messagesCount; i++) {
+            String line = s.nextLine();
+            String[] argsS = line.split(": ");
+            Matcher firstWord = first.matcher(argsS[0]);
+            List<String> matchWord = new ArrayList<String>();
+            while(firstWord.find()) matchWord.add(firstWord.group(1));
+            List<Integer> matchWords = new ArrayList<Integer>();
+            Matcher secondWord = second.matcher(argsS[1]);
+            while(secondWord.find()) matchWords.add(Integer.parseInt(secondWord.group(1)));
+            if(firstWord.matches()) {
+                String tag = matchWord.get(2);
+                String message = "";
+                for(int j = 0; j < matchWords.size(); j++) {
+                    message += Character.forDigit(matchWords.get(j), 10);
+
+                }
+                System.out.printf("%s: %s", tag, message);
+            }
+            else {
+                System.out.println("Valid message not found!");
+            }
+        }
+    }
+}
